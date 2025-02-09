@@ -21,14 +21,13 @@
             text-align: center;
             color: #2C3E50;
             margin-bottom: 40px;
-            font-size: 32px;
+            font-size: clamp(24px, 5vw, 32px);
         }
         .timeline {
             position: relative;
             padding: 20px 0;
-            overflow-x: auto;
-            white-space: nowrap;
-            padding-bottom: 30px;
+            overflow: visible;
+            padding-bottom: 200px;
         }
         .timeline::after {
             content: '';
@@ -42,11 +41,10 @@
         }
         .timeline-items {
             display: flex;
-            flex-direction: row-reverse; /* 순서 반대로 변경 */
+            flex-direction: row-reverse;
             justify-content: space-between;
             position: relative;
             z-index: 1;
-            min-width: 1000px;
             padding: 0 20px;
         }
         .timeline-item {
@@ -54,11 +52,12 @@
             padding: 0 15px;
             position: relative;
             cursor: pointer;
-            min-width: 180px;
+            min-width: 100px;
+            max-width: 200px;
         }
         .grade-circle {
-            width: 80px;
-            height: 80px;
+            width: clamp(60px, 8vw, 80px);
+            height: clamp(60px, 8vw, 80px);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -69,7 +68,7 @@
             z-index: 2;
         }
         .grade-text {
-            font-size: 24px;
+            font-size: clamp(18px, 3vw, 24px);
             font-weight: bold;
             color: white;
         }
@@ -82,31 +81,23 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 3px 15px rgba(0,0,0,0.2);
-            width: 200px;
+            width: clamp(200px, 80vw, 250px);
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
             pointer-events: none;
             z-index: 10;
         }
-        
-        .timeline {
-            position: relative;
-            padding: 20px 0;
-            overflow: visible;
-            white-space: nowrap;
-            padding-bottom: 200px;
-        }
         .description {
             opacity: 0;
             transition: opacity 0.3s ease;
+            font-size: clamp(14px, 2vw, 16px);
         }
         .features {
             margin-top: 15px;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-        /* 호버나 클릭 시 내용 표시 */
         .timeline-item:hover .timeline-content,
         .timeline-item:focus .timeline-content,
         .timeline-item.active .timeline-content {
@@ -129,9 +120,9 @@
         }
         .feature-item {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 8px;
-            font-size: 13px;
+            font-size: clamp(12px, 1.8vw, 14px);
             white-space: normal;
             line-height: 1.4;
         }
@@ -139,6 +130,7 @@
             content: '•';
             margin-right: 8px;
             color: #3498db;
+            flex-shrink: 0;
         }
         
         /* 등급별 색상 */
@@ -148,17 +140,59 @@
         .a .grade-circle { background: #C0C0C0; }
         .ap .grade-circle { background: #FFD700; }
 
-        @media (max-width: 768px) {
+        /* 반응형 스타일 */
+        @media (max-width: 1024px) {
             .timeline-items {
-                min-width: 800px;
+                gap: 10px;
             }
             .timeline-item {
-                min-width: 160px;
+                padding: 0 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .timeline-container {
+                padding: 10px;
+            }
+            .timeline {
+                overflow-x: auto;
+                padding-bottom: 250px;
+            }
+            .timeline-items {
+                min-width: max-content;
+                padding: 0 10px;
+            }
+            .timeline-content {
+                width: 220px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .timeline {
+                padding-bottom: 300px;
+            }
+            .timeline-content {
+                width: 180px;
+                padding: 15px;
+            }
+            .feature-item {
+                font-size: 12px;
+            }
+        }
+
+        /* 터치 디바이스 지원 */
+        @media (hover: none) {
+            .timeline-item:active .grade-circle {
+                transform: scale(1.1);
+            }
+            .timeline-content {
+                pointer-events: auto;
             }
         }
     </style>
 </head>
 <body>
+    <!-- HTML 내용은 이전과 동일 -->
     <div class="timeline-container">
         <h1 class="timeline-title">레벨 등급 시스템</h1>
         <div class="timeline">
@@ -240,18 +274,39 @@
         // 클릭 이벤트 처리
         document.querySelectorAll('.timeline-item').forEach(item => {
             item.addEventListener('click', () => {
-                // 이미 활성화된 아이템이면 비활성화
                 if (item.classList.contains('active')) {
                     item.classList.remove('active');
                 } else {
-                    // 다른 활성화된 아이템들을 비활성화
                     document.querySelectorAll('.timeline-item.active').forEach(activeItem => {
                         activeItem.classList.remove('active');
                     });
-                    // 현재 아이템 활성화
                     item.classList.add('active');
                 }
             });
+        });
+
+        // 모바일 스크롤 개선
+        const timeline = document.querySelector('.timeline');
+        let isScrolling = false;
+        let startX;
+        let scrollLeft;
+
+        timeline.addEventListener('touchstart', (e) => {
+            isScrolling = true;
+            startX = e.touches[0].pageX - timeline.offsetLeft;
+            scrollLeft = timeline.scrollLeft;
+        });
+
+        timeline.addEventListener('touchmove', (e) => {
+            if (!isScrolling) return;
+            e.preventDefault();
+            const x = e.touches[0].pageX - timeline.offsetLeft;
+            const walk = (x - startX) * 2;
+            timeline.scrollLeft = scrollLeft - walk;
+        });
+
+        timeline.addEventListener('touchend', () => {
+            isScrolling = false;
         });
     </script>
 </body>

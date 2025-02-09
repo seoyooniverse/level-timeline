@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학원 레벨 시스템</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f8f9fa;
+        }
+        .timeline-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        .timeline-title {
+            text-align: center;
+            color: #2C3E50;
+            margin-bottom: 40px;
+            font-size: 32px;
+        }
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding-bottom: 30px;
+        }
+        .timeline::after {
+            content: '';
+            position: absolute;
+            height: 6px;
+            background: #ddd;
+            left: 0;
+            right: 0;
+            top: 50px;
+            border-radius: 3px;
+        }
+        .timeline-items {
+            display: flex;
+            flex-direction: row-reverse; /* 순서 반대로 변경 */
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+            min-width: 1000px;
+            padding: 0 20px;
+        }
+        .timeline-item {
+            flex: 1;
+            padding: 0 15px;
+            position: relative;
+            cursor: pointer;
+            min-width: 180px;
+        }
+        .grade-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            position: relative;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+        .grade-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+        .timeline-content {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.2);
+            width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+            overflow: visible;
+            white-space: nowrap;
+            padding-bottom: 200px;
+        }
+        .description {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .features {
+            margin-top: 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        /* 호버나 클릭 시 내용 표시 */
+        .timeline-item:hover .timeline-content,
+        .timeline-item:focus .timeline-content,
+        .timeline-item.active .timeline-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(10px);
+        }
+        .timeline-item:hover .description,
+        .timeline-item:focus .description,
+        .timeline-item.active .description,
+        .timeline-item:hover .features,
+        .timeline-item:focus .features,
+        .timeline-item.active .features {
+            opacity: 1;
+        }
+        .timeline-item:hover .grade-circle,
+        .timeline-item:focus .grade-circle,
+        .timeline-item.active .grade-circle {
+            transform: scale(1.1);
+        }
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 13px;
+            white-space: normal;
+            line-height: 1.4;
+        }
+        .feature-item::before {
+            content: '•';
+            margin-right: 8px;
+            color: #3498db;
+        }
+        
+        /* 등급별 색상 */
+        .c .grade-circle { background: #9E9E9E; }
+        .b .grade-circle { background: #2196F3; }
+        .bp .grade-circle { background: #4CAF50; }
+        .a .grade-circle { background: #C0C0C0; }
+        .ap .grade-circle { background: #FFD700; }
+
+        @media (max-width: 768px) {
+            .timeline-items {
+                min-width: 800px;
+            }
+            .timeline-item {
+                min-width: 160px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="timeline-container">
+        <h1 class="timeline-title">레벨 등급 시스템</h1>
+        <div class="timeline">
+            <div class="timeline-items">
+                <div class="timeline-item c">
+                    <div class="grade-circle">
+                        <div class="grade-text">C</div>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="description">초보자 등급</div>
+                        <div class="features">
+                            <div class="feature-item">기초 학습 단계</div>
+                            <div class="feature-item">기본 소양 개발 중</div>
+                            <div class="feature-item">성장 가능성 확인 단계</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item b">
+                    <div class="grade-circle">
+                        <div class="grade-text">B</div>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="description">발전과 도전이 필요한 등급</div>
+                        <div class="features">
+                            <div class="feature-item">기본 역량 습득 단계</div>
+                            <div class="feature-item">실무 경험 쌓기 시작</div>
+                            <div class="feature-item">지속적인 훈련 필요</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item bp">
+                    <div class="grade-circle">
+                        <div class="grade-text">B+</div>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="description">성장 가능성이 높은 등급</div>
+                        <div class="features">
+                            <div class="feature-item">기본기가 탄탄한 단계</div>
+                            <div class="feature-item">실무 역량 향상 중</div>
+                            <div class="feature-item">적극적인 학습 의지</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item a">
+                    <div class="grade-circle">
+                        <div class="grade-text">A</div>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="description">우수 인력 자원 등급</div>
+                        <div class="features">
+                            <div class="feature-item">높은 실무 역량 보유</div>
+                            <div class="feature-item">안정적인 업무 수행 능력</div>
+                            <div class="feature-item">지속적인 성장 잠재력</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item ap">
+                    <div class="grade-circle">
+                        <div class="grade-text">A+</div>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="description">현장 바로 투입 가능한 최고 등급</div>
+                        <div class="features">
+                            <div class="feature-item">인성과 실무능력 모두 갖춘 인재</div>
+                            <div class="feature-item">리더십과 팀워크 역량 보유</div>
+                            <div class="feature-item">현장 프로젝트 즉시 참여 가능</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 클릭 이벤트 처리
+        document.querySelectorAll('.timeline-item').forEach(item => {
+            item.addEventListener('click', () => {
+                // 이미 활성화된 아이템이면 비활성화
+                if (item.classList.contains('active')) {
+                    item.classList.remove('active');
+                } else {
+                    // 다른 활성화된 아이템들을 비활성화
+                    document.querySelectorAll('.timeline-item.active').forEach(activeItem => {
+                        activeItem.classList.remove('active');
+                    });
+                    // 현재 아이템 활성화
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
